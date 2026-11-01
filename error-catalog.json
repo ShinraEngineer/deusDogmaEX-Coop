@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "version": 1,
+  "revision": "0.1.0",
+  "note": "Precompiled DD2 co-op crash catalog. 'code' is an NTSTATUS hex (matched on the full 32-bit exit code) or a DD2gether symbol string matched in the launcher log. The popup shows '#' + the low 16 bits (e.g. 0xC0000139 -> #0139). report_default=false entries only report when a WER .dmp was also produced. suppress_if_clean_exit=true entries are dropped when the log shows an orderly quit.",
+  "default": {
+    "title": "Unexpected Game Crash",
+    "reason": "Dragon's Dogma 2 closed unexpectedly for a reason not yet in the catalog. The report includes the exact code and the recent logs so it can be classified.",
+    "severity": "warn",
+    "likely": "Unknown - needs the attached logs/dump to diagnose.",
+    "action": "Send the report so the exact code can be added to the catalog.",
+    "report_default": false,
+    "suppress_if_clean_exit": true
+  },
+  "entries": [
+    {
+      "code": "0xC0000139",
+      "ntstatus": "STATUS_ENTRYPOINT_NOT_FOUND",
+      "title": "Mod Loader Component Mismatch",
+      "reason": "A mod DLL asked Windows for a function that the installed version of another component does not provide, so the game was killed before it opened. This is a load-time version mismatch, not a gameplay fault.",
+      "severity": "crit",
+      "likely": "A REFramework plugin (e.g. reframework-io-extend.dll) built for a different REFramework/game build; a stale or mixed modpack.",
+      "action": "Re-run DD2CoopSetup.exe to redeploy the matched modpack; if it persists, quarantine the offending plugin.",
+      "report_default": true,
+      "suppress_if_clean_exit": false
+    },
+    {
+      "code": "0xC0000135",
+      "ntstatus": "STATUS_DLL_NOT_FOUND",
+      "title": "Missing Mod Component",
+      "reason": "A required DLL was not found at launch, so the game could not start.",
+      "severity": "crit",
+      "likely": "An incomplete modpack deploy; a deleted or blocked file (antivirus); REFramework dinput8.dll missing.",
+      "action": "Re-run DD2CoopSetup.exe to redeploy; check antivirus quarantine.",
+      "report_default": true,
+      "suppress_if_clean_exit": false
+    },
+    {
+      "code": "0xC0000005",
+      "ntstatus": "STATUS_ACCESS_VIOLATION",
+      "title": "Game Memory Fault",
+      "reason": "The game read or wrote memory it should not have and crashed. NOTE: DD2 also returns this code on a perfectly normal quit-to-desktop, so this is only reported when a real crash dump was produced and the logs do not show an orderly shutdown.",
+      "severity": "crit",
+      "likely": "A mod interaction, a bad asset/pak, a GPU driver fault, or a genuine engine bug during play.",
+      "action": "Send the report with the crash dump; if it recurs at a specific action, note what you were doing.",
+      "report_default": false,
+      "suppress_if_clean_exit": true
+    },
+    {
+      "code": "0xC0000006",
+      "ntstatus": "STATUS_IN_PAGE_ERROR",
+      "title": "Disk or Paging Read Error",
+      "reason": "Windows could not read a page of the game's memory or files from disk.",
+      "severity": "warn",
+      "likely": "A failing drive, a bad game file, or low memory/pagefile pressure.",
+      "action": "Verify the drive's health; re-run the installer to restore files if needed.",
+      "report_default": false,
+      "suppress_if_clean_exit": true
+    },
+    {
+      "code": "0xC0000409",
+      "ntstatus": "STATUS_STACK_BUFFER_OVERRUN",
+      "title": "Memory Guard Tripped",
+      "reason": "A security guard detected memory being overwritten and stopped the game at once (fail-fast).",
+      "severity": "crit",
+      "likely": "A mod or asset corrupting memory; occasionally a driver.",
+      "action": "Send the report; this usually points at a specific mod or asset.",
+      "report_default": true,
+      "suppress_if_clean_exit": false
+    },
+    {
+      "code": "0xC0000374",
+      "ntstatus": "STATUS_HEAP_CORRUPTION",
+      "title": "Memory Heap Corruption",
+      "reason": "The game's memory allocator detected corruption and aborted.",
+      "severity": "crit",
+      "likely": "A misbehaving mod/plugin writing out of bounds.",
+      "action": "Send the report with the dump; likely a specific plugin.",
+      "report_default": true,
+      "suppress_if_clean_exit": false
+    },
+    {
+      "code": "0xC000001D",
+      "ntstatus": "STATUS_ILLEGAL_INSTRUCTION",
+      "title": "Illegal Instruction",
+      "reason": "The CPU hit an instruction it could not execute and the game crashed.",
+      "severity": "crit",
+      "likely": "Corrupted code/asset, overclock instability, or a bad patch pak.",
+      "action": "Send the report; re-run the installer to restore clean files.",
+      "report_default": true,
+      "suppress_if_clean_exit": false
+    },
+    {
+      "code": "0xC00000FD",
+      "ntstatus": "STATUS_STACK_OVERFLOW",
+      "title": "Stack Overflow",
+      "reason": "The game recursed too deeply and ran out of stack space.",
+      "severity": "crit",
+      "likely": "A mod script loop or a pathological game state.",
+      "action": "Send the report; note what was happening in-game.",
+      "report_default": true,
+      "suppress_if_clean_exit": false
+    },
+    {
+      "code": "0xE0434352",
+      "ntstatus": "CLR_UNHANDLED_EXCEPTION",
+      "title": "Co-op Launcher Crash (DD2gether)",
+      "reason": "The DD2gether launcher (a .NET app) hit an unhandled exception and closed.",
+      "severity": "crit",
+      "likely": "A launcher bug, a bad save-store state, or a Steam/network fault during setup.",
+      "action": "Send the report with the launcher log; try DD2CoopSetup.exe --repair if hosting was involved.",
+      "report_default": true,
+      "suppress_if_clean_exit": false
+    },
+    {
+      "code": "0xC000013A",
+      "ntstatus": "STATUS_CONTROL_C_EXIT",
+      "title": "Game Terminated",
+      "reason": "The process was terminated (e.g. closed from Task Manager). Not a crash.",
+      "severity": "warn",
+      "likely": "User or system ended the process.",
+      "action": "No action; suppressed.",
+      "report_default": false,
+      "suppress_if_clean_exit": true
+    },
+    {
+      "code": "DD2GETHER:private-campaign-timeout",
+      "match_log": "did not confirm the private campaign|did not confirm private campaign startup",
+      "title": "Co-op Save Handshake Timeout",
+      "reason": "Hosting got stuck on 'Preparing campaign...' and timed out because the launcher and the in-game mod could not hand the save back and forth. This is the two-store split, not a game crash.",
+      "severity": "warn",
+      "likely": "The DD2gether save folder is not shared with the game folder (split store), or a stuck prior session.",
+      "action": "Close the game and run DD2CoopSetup.exe --repair (re-links the save folder and clears the stuck session), then host again.",
+      "report_default": true,
+      "suppress_if_clean_exit": false
+    }
+  ]
+}
