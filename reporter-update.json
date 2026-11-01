@@ -1,8 +1,8 @@
 {
   "version": 1,
   "exe": "ShinraCrashReporter.exe",
-  "sha256": "6dee93863c44c3f645463fb5f287e3f52df5a56f17eeedeb0b1611de3f7ceb69",
-  "size": 51703312,
+  "sha256": "d398390254c2b772f1ae1ef1563aef5ecf1ca99c3f2b8562a6bb56e42d4d82db",
+  "size": 51703456,
   "minVersion": 1,
   "mandatory": false,
   "notes": "Initial release of the Shinra Crash Reporter for Dragon's Dogma 2 co-op."
