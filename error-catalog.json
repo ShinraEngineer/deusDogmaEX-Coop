@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": 1,
+  "version": 2,
   "revision": "0.1.0",
   "note": "Precompiled DD2 co-op crash catalog. 'code' is an NTSTATUS hex (matched on the full 32-bit exit code) or a DD2gether symbol string matched in the launcher log. The popup shows '#' + the low 16 bits (e.g. 0xC0000139 -> #0139). report_default=false entries only report when a WER .dmp was also produced. suppress_if_clean_exit=true entries are dropped when the log shows an orderly quit.",
   "default": {
